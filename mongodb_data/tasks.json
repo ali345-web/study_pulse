@@ -1,0 +1,30 @@
+[
+  {
+    "_id": "task_1",
+    "userId": null,
+    "title": "RS अग्रवाल: प्रतिशतता अध्याय के 20 प्रश्न हल करना",
+    "completed": true,
+    "date": "2026-10-01"
+  },
+  {
+    "_id": "task_2",
+    "userId": null,
+    "title": "संविधान के मौलिक अधिकारों के अनुच्छेद 14 से 32 दोहराना",
+    "completed": true,
+    "date": "2026-10-01"
+  },
+  {
+    "_id": "task_3",
+    "userId": null,
+    "title": "SSC CGL क्वांटिटेटिव एप्टीट्यूड का 15 मिनट का मॉक टेस्ट देना",
+    "completed": false,
+    "date": "2026-10-01"
+  },
+  {
+    "_id": "task_4",
+    "userId": null,
+    "title": "रेलवे RRB NTPC की अधिसूचना व योग्यता जांचना",
+    "completed": false,
+    "date": "2026-10-01"
+  }
+]

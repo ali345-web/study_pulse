@@ -1,0 +1,58 @@
+[
+  {
+    "_id": "job_ssc_cgl_2026",
+    "title": "SSC CGL भर्ती 2026 (Assistant Section Officer, Inspector, Tax Assistant)",
+    "dept": "कर्मचारी चयन आयोग (Staff Selection Commission)",
+    "category": "ssc",
+    "vacancies": "17,727 पद",
+    "salary": "₹35,400 - ₹1,42,400 (Level 4 से Level 7)",
+    "qualification": "मान्यता प्राप्त विश्वविद्यालय से किसी भी विषय में स्नातक (Graduation Degree)",
+    "age": "18 से 30 वर्ष (आरक्षण नियमानुसार छूट)",
+    "lastDate": "2026-10-15",
+    "status": "active",
+    "applyUrl": "https://ssc.gov.in",
+    "pattern": "1. मात्रात्मक योग्यता (Quantitative Aptitude - RS Aggarwal level): 25 प्रश्न\n2. सामान्य बुद्धिमत्ता (Reasoning): 25 प्रश्न\n3. सामान्य अध्ययन (General Awareness): 25 प्रश्न\n4. अंग्रेजी समझ (English Comprehension): 25 प्रश्न"
+  },
+  {
+    "_id": "job_rrb_ntpc_2026",
+    "title": "रेलवे भर्ती बोर्ड (RRB NTPC) स्नातक एवं 12वीं स्तर भर्ती",
+    "dept": "भारतीय रेल (Ministry of Railways)",
+    "category": "railway",
+    "vacancies": "11,558 पद (Station Master, Goods Train Manager, Clerk)",
+    "salary": "₹19,900 - ₹35,400 (पे-मैट्रिक्स स्तर 2 से 6)",
+    "qualification": "12वीं पास (क्लर्क पद) / स्नातक डिग्री (स्टेशन मास्टर/गुड्स गार्ड)",
+    "age": "18 से 33 वर्ष",
+    "lastDate": "2026-10-25",
+    "status": "active",
+    "applyUrl": "https://rrbapply.gov.in",
+    "pattern": "सीबीटी-1: 100 प्रश्न (गणित 30, रीजनिंग 30, सामान्य जागरूकता 40) | समय: 90 मिनट"
+  },
+  {
+    "_id": "job_sbi_po_2026",
+    "title": "भारतीय स्टेट बैंक (SBI) प्रोबेशनरी ऑफिसर (PO) भर्ती 2026",
+    "dept": "State Bank of India (SBI)",
+    "category": "banking",
+    "vacancies": "2,000+ पद",
+    "salary": "₹65,780 प्रति माह (प्रारंभिक सकल वेतन)",
+    "qualification": "किसी भी मान्यता प्राप्त विश्वविद्यालय से स्नातक (Graduation in Any Stream)",
+    "age": "21 से 30 वर्ष",
+    "lastDate": "2026-11-05",
+    "status": "upcoming",
+    "applyUrl": "https://sbi.co.in/careers",
+    "pattern": "प्रीलिम्स: 100 प्रश्न (अंग्रेजी 30, क्वांट 35, रीजनिंग 35) | समय: 60 मिनट"
+  },
+  {
+    "_id": "job_police_si_2026",
+    "title": "राज्य पुलिस सब-इंस्पेक्टर (SI) एवं सिपाही (Constable) भर्ती",
+    "dept": "राज्य पुलिस भर्ती एवं प्रोन्नति बोर्ड",
+    "category": "police",
+    "vacancies": "60,244 पद",
+    "salary": "₹21,700 - ₹69,100 (ग्रेड पे 2000/4200)",
+    "qualification": "12वीं कक्षा उत्तीर्ण (कांस्टेबल) / स्नातक (सब इंस्पेक्टर)",
+    "age": "18 से 25 वर्ष",
+    "lastDate": "2026-11-18",
+    "status": "active",
+    "applyUrl": "https://uppbpb.gov.in",
+    "pattern": "लिखित परीक्षा (300 अंक): सामान्य ज्ञान, सामान्य हिंदी, संख्यात्मक एवं मानसिक योग्यता"
+  }
+]

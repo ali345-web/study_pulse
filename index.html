@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>StudyPulse - Smart Study App</title>
+  <script>
+    // Automatically redirect to live server
+    if (window.location.protocol === 'file:') {
+      // Try to redirect to live localhost server
+      fetch('http://127.0.0.1:5000/api/health')
+        .then(() => {
+          window.location.replace('http://localhost:5000/studypulse');
+        })
+        .catch(() => {
+          window.location.replace('frontend/index.html');
+        });
+    } else {
+      window.location.replace('frontend/index.html');
+    }
+  </script>
+</head>
+<body style="font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center;">
+  <div style="background: rgba(30, 41, 59, 0.7); padding: 32px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.4); max-width: 420px; width: 90%;">
+    <div style="font-size: 48px; margin-bottom: 12px;">🎓</div>
+    <h2 style="font-size: 22px; margin: 0 0 8px 0; font-weight: 800;">StudyPulse लोड हो रहा है...</h2>
+    <p style="color: #94a3b8; font-size: 13px; margin: 0 0 24px 0;">यदि पृष्ठ अपने आप न खुले, तो नीचे क्लिक करें:</p>
+    
+    <a href="http://localhost:5000/studypulse" style="display: block; padding: 14px 20px; background: linear-gradient(135deg, #4f46e5, #6366f1); color: #fff; text-decoration: none; border-radius: 14px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); margin-bottom: 12px;">
+      🚀 StudyPulse ऐप खोलें (http://localhost:5000/studypulse)
+    </a>
+    
+    <a href="frontend/index.html" style="color: #a5b4fc; font-size: 12px; text-decoration: underline;">
+      या सीधे ऑफलाइन खोलें (Direct File)
+    </a>
+  </div>
+</body>
+</html>

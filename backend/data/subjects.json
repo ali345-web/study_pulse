@@ -1,0 +1,46 @@
+[
+  {
+    "_id": "sub_1",
+    "title": "संख्यात्मक अभियोग्यता (Quantitative Aptitude)",
+    "code": "MATH-01",
+    "courseId": "crs_1",
+    "courseName": "SSC CGL / CHSL 2026 संपूर्ण तैयारी",
+    "description": "प्रतिशत, लाभ-हानि, अनुपात, कार्य-समय, चाल-दूरी, ज्यामिति व त्रिकोणमिति।",
+    "icon": "fa-calculator",
+    "published": true,
+    "chaptersCount": 38
+  },
+  {
+    "_id": "sub_2",
+    "title": "सामान्य बुद्धिमत्ता एवं तर्कशक्ति (Reasoning)",
+    "code": "REAS-01",
+    "courseId": "crs_1",
+    "courseName": "SSC CGL / CHSL 2026 संपूर्ण तैयारी",
+    "description": "सादृश्यता, वर्गीकरण, रक्त संबंध, दिशा ज्ञान, कोडिंग-डिकोडिंग, सिटिंग अरेंजमेंट।",
+    "icon": "fa-brain",
+    "published": true,
+    "chaptersCount": 26
+  },
+  {
+    "_id": "sub_3",
+    "title": "सामान्य अध्ययन एवं समसामयिकी (General Awareness)",
+    "code": "GK-01",
+    "courseId": "crs_2",
+    "courseName": "रेलवे RRB NTPC & Group D 2026",
+    "description": "भारतीय इतिहास, संविधान व राजव्यवस्था, भूगोल, सामान्य विज्ञान एवं करंट अफेयर्स।",
+    "icon": "fa-landmark",
+    "published": true,
+    "chaptersCount": 42
+  },
+  {
+    "_id": "sub_4",
+    "title": "सामान्य हिंदी व्याकरण (Hindi Grammar)",
+    "code": "HIN-01",
+    "courseId": "crs_4",
+    "courseName": "राज्य पुलिस SI एवं कांस्टेबल भर्ती 2026",
+    "description": "संधि, समास, रस-छंद-अलंकार, मुहावरे, विलोम-पर्यायवाची, वर्तनी शुद्धि।",
+    "icon": "fa-book",
+    "published": true,
+    "chaptersCount": 20
+  }
+]

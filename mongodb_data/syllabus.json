@@ -1,0 +1,95 @@
+[
+  {
+    "_id": "syl_1",
+    "subject": "गणित (Mathematics)",
+    "chapter": "आर एस अग्रवाल: संख्या पद्धति एवं सरलीकरण (Number System)",
+    "topics": [
+      {
+        "id": "t_rsa_1",
+        "name": "इकाई का अंक (Unit Digit) एवं शेषफल प्रमेय",
+        "completed": true
+      },
+      {
+        "id": "t_rsa_2",
+        "name": "विभाज्यता के नियम (Divisibility Rules - 7, 11, 13)",
+        "completed": true
+      },
+      {
+        "id": "t_rsa_3",
+        "name": "दशमलव भिन्न एवं बार (Bar/Recurring Decimals)",
+        "completed": false
+      },
+      {
+        "id": "t_rsa_4",
+        "name": "BODMAS नियम एवं जटिल सरलीकरण",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "_id": "syl_2",
+    "subject": "गणित (Mathematics)",
+    "chapter": "आर एस अग्रवाल: प्रतिशतता एवं लाभ-हानि (Percentage & Profit)",
+    "topics": [
+      {
+        "id": "t_rsa_5",
+        "name": "प्रतिशत से भिन्न एवं भिन्न से प्रतिशत मान याद करना",
+        "completed": true
+      },
+      {
+        "id": "t_rsa_6",
+        "name": "लगातार प्रतिशत परिवर्तन (Successive % Change)",
+        "completed": true
+      },
+      {
+        "id": "t_rsa_7",
+        "name": "अंकित मूल्य, छूट (Discount) और क्रय मूल्य संबंध",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "_id": "syl_3",
+    "subject": "रीजनिंग (Reasoning)",
+    "chapter": "कोडिंग-डिकोडिंग एवं सादृश्यता (Coding-Decoding)",
+    "topics": [
+      {
+        "id": "t_reas_1",
+        "name": "अंग्रेजी वर्णमाला के उल्टे अक्षर (Opposite Letters)",
+        "completed": true
+      },
+      {
+        "id": "t_reas_2",
+        "name": "अक्षर एवं संख्या कोडिंग ट्रिक्स",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "_id": "syl_gk",
+    "subject": "सामान्य ज्ञान (GK & GS)",
+    "chapter": "भारतीय संविधान, राजव्यवस्था एवं इतिहास (Polity & History)",
+    "topics": [
+      {
+        "id": "tg_1",
+        "name": "संविधान सभा, प्रस्तावना और मौलिक अधिकार (12-35)",
+        "completed": true
+      },
+      {
+        "id": "tg_2",
+        "name": "राष्ट्रपति, संसद एवं सर्वोच्च न्यायालय",
+        "completed": true
+      },
+      {
+        "id": "tg_3",
+        "name": "1857 की क्रांति और भारतीय राष्ट्रीय आंदोलन",
+        "completed": false
+      },
+      {
+        "id": "tg_4",
+        "name": "भारत का भूगोल एवं नदियां",
+        "completed": false
+      }
+    ]
+  }
+]

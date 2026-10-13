@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="hi" class="h-full">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyPulse Admin Portal - कंट्रोल पैनल</title>
+
+  <!-- PWA & Mobile Web App Capabilities -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          },
+          fontFamily: {
+            sans: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Font Awesome 6 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .dark .glass-panel {
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .admin-card {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .admin-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.15);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+    .modal-spring {
+      animation: modalSpring 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modalSpring {
+      0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+
+<body class="h-full bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased overflow-x-hidden">
+
+  <!-- ========================================== -->
+  <!-- 1. ADMIN SECURE LOGIN MODAL / VIEW          -->
+  <!-- ========================================== -->
+  <div id="admin-login-view" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 relative modal-spring">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-purple-600 text-white text-3xl shadow-xl shadow-brand-500/30 mb-4">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white">StudyPulse Admin</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">सुरक्षित व्यवस्थापक नियंत्रण केंद्र (Secure Control Panel)</p>
+      </div>
+
+      <div id="admin-login-alert" class="hidden mb-4 p-3.5 rounded-2xl text-xs font-semibold"></div>
+
+      <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">एडमिन यूज़रनेम (Admin Username)</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
+              <i class="fa-solid fa-user-shield text-sm"></i>
+            </span>
+            <input type="text" id="admin-user-input" required placeholder="admin"
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">एडमिन पासवर्ड (Password)</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
+              <i class="fa-solid fa-lock text-sm"></i>
+            </span>
+            <input type="password" id="admin-pass-input" required placeholder="••••••••"
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+        </div>
+
+        <button type="submit" id="admin-login-btn"
+          class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-bold text-sm shadow-lg shadow-brand-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          <span>कंट्रोल पैनल में सुरक्षित लॉगिन</span>
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs text-slate-500">
+        <span>डेटाबेस: <strong>MongoDB Atlas</strong></span>
+        <a href="/studypulse" class="text-brand-600 dark:text-brand-400 font-semibold hover:underline flex items-center gap-1">
+          <i class="fa-solid fa-graduation-cap"></i> विद्यार्थी ऐप खोलें
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. MAIN ADMIN APPLICATION INTERFACE        -->
+  <!-- ========================================== -->
+  <div id="admin-app-view" class="hidden flex h-full overflow-hidden">
+
+    <!-- ADMIN SIDEBAR (DESKTOP & MOBILE DRAWER) -->
+    <aside id="admin-sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 transition-transform duration-300 transform -translate-x-full md:translate-x-0">
+      
+      <!-- Sidebar Header -->
+      <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 text-white flex items-center justify-center text-xl shadow-md shadow-brand-500/20">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div>
+            <h2 class="font-extrabold text-sm text-slate-900 dark:text-white leading-tight">StudyPulse</h2>
+            <span class="text-[10px] uppercase tracking-wider font-bold text-brand-600 dark:text-brand-400">Admin Control</span>
+          </div>
+        </div>
+        <button onclick="toggleAdminSidebar()" class="md:hidden text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Tabs (A through J) -->
+      <nav class="flex-1 p-3 space-y-1 overflow-y-auto custom-scrollbar">
+        <button onclick="switchAdminTab('overview')" id="nav-tab-overview" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-300">
+          <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+          <span>1. ओवरव्यू (Overview)</span>
+        </button>
+
+        <button onclick="switchAdminTab('users')" id="nav-tab-users" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-user-gear w-5 text-center text-purple-500"></i>
+          <span>2. उपयोगकर्ता (Users)</span>
+        </button>
+
+        <button onclick="switchAdminTab('courses')" id="nav-tab-courses" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-graduation-cap w-5 text-center text-blue-500"></i>
+          <span>3. कोर्सेज (Courses)</span>
+        </button>
+
+        <button onclick="switchAdminTab('subjects')" id="nav-tab-subjects" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-book-bookmark w-5 text-center text-indigo-500"></i>
+          <span>4. विषय (Subjects)</span>
+        </button>
+
+        <button onclick="switchAdminTab('materials')" id="nav-tab-materials" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-file-pdf w-5 text-center text-rose-500"></i>
+          <span>5. स्टडी सामग्री व PDF</span>
+        </button>
+
+        <button onclick="switchAdminTab('quizzes')" id="nav-tab-quizzes" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-list-check w-5 text-center text-emerald-500"></i>
+          <span>6. क्विज व मॉक टेस्ट (MCQ)</span>
+        </button>
+
+        <button onclick="switchAdminTab('results')" id="nav-tab-results" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-square-poll-vertical w-5 text-center text-teal-500"></i>
+          <span>7. रिजल्ट्स व प्रोग्रेस</span>
+        </button>
+
+        <button onclick="switchAdminTab('announcements')" id="nav-tab-announcements" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-bullhorn w-5 text-center text-amber-500"></i>
+          <span>8. घोषणाएं (Announcements)</span>
+        </button>
+
+        <button onclick="switchAdminTab('notifications')" id="nav-tab-notifications" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-bell w-5 text-center text-cyan-500"></i>
+          <span>9. सूचनाएं (Notifications)</span>
+        </button>
+
+        <button onclick="switchAdminTab('settings')" id="nav-tab-settings" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-sliders w-5 text-center text-violet-500"></i>
+          <span>10. ऐप सेटिंग्स (Settings)</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+        <a href="/studypulse" target="_blank" class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition">
+          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+          <span>विद्यार्थी ऐप खोलें</span>
+        </a>
+
+        <button onclick="handleAdminLogout()" class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-bold transition cursor-pointer">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>लॉगआउट (Logout)</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- SIDEBAR BACKDROP FOR MOBILE -->
+    <div id="admin-sidebar-backdrop" onclick="toggleAdminSidebar()" class="fixed inset-0 bg-slate-950/60 z-30 hidden md:hidden"></div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-slate-950">
+
+      <!-- TOPBAR -->
+      <header class="h-16 px-4 sm:px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <button onclick="toggleAdminSidebar()" class="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
+          <h1 id="admin-topbar-title" class="text-base font-extrabold text-slate-900 dark:text-white">
+            📊 ओवरव्यू (Dashboard Overview)
+          </h1>
+          <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            MongoDB Atlas Live
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Dark Mode Toggle -->
+          <button onclick="toggleAdminDarkMode()" class="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="थीम बदलें">
+            <i id="admin-theme-icon" class="fa-solid fa-moon text-sm"></i>
+          </button>
+
+          <!-- Admin Profile Badge -->
+          <div class="flex items-center gap-2.5 pl-3 border-l border-slate-200 dark:border-slate-800">
+            <div class="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-300 flex items-center justify-center font-bold text-xs">
+              👨‍💼
+            </div>
+            <div class="hidden sm:block text-left">
+              <div id="admin-profile-name" class="text-xs font-bold text-slate-900 dark:text-white leading-none">Super Admin</div>
+              <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">● Verified Admin</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- SCROLLABLE TAB CONTAINER -->
+      <div id="admin-tabs-scroll-area" class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar">
+
+        <!-- ============================================== -->
+        <!-- TAB 1: OVERVIEW & DASHBOARD METRICS            -->
+        <!-- ============================================== -->
+        <div id="tab-overview" class="space-y-6">
+          
+          <!-- Quick Welcome & Actions Strip -->
+          <div class="p-6 rounded-3xl bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/15 text-white backdrop-blur-md mb-2 border border-white/20">
+                ⚡ StudyPulse Live System
+              </span>
+              <h2 class="text-xl sm:text-2xl font-black">नमस्ते, व्यवस्थापक! 👋</h2>
+              <p class="text-xs sm:text-sm text-indigo-100 mt-1">StudyPulse प्लेटफॉर्म पर सभी छात्र गतिविधियां, कोर्सेज, और रिजल्ट्स लाइव सिंक हैं।</p>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button onclick="switchAdminTab('users')" class="px-3.5 py-2 rounded-xl bg-white text-brand-700 font-bold text-xs shadow-md hover:bg-slate-100 transition cursor-pointer">
+                <i class="fa-solid fa-users"></i> छात्र सूची
+              </button>
+              <button onclick="openCourseModal()" class="px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs backdrop-blur-md border border-white/20 transition cursor-pointer">
+                <i class="fa-solid fa-plus"></i> नया कोर्स
+              </button>
+              <button onclick="openQuizModal()" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow transition cursor-pointer">
+                <i class="fa-solid fa-pen-to-square"></i> नया टेस्ट बनाएं
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="overview-kpi-grid">
+            <!-- Cards will be populated by admin.js -->
+            <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 animate-pulse">
+              <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3"></div>
+              <div class="h-8 bg-slate-300 dark:bg-slate-600 rounded w-3/4"></div>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 animate-pulse">
+              <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3"></div>
+              <div class="h-8 bg-slate-300 dark:bg-slate-600 rounded w-3/4"></div>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 animate-pulse">
+              <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3"></div>
+              <div class="h-8 bg-slate-300 dark:bg-slate-600 rounded w-3/4"></div>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 animate-pulse">
+              <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3"></div>
+              <div class="h-8 bg-slate-300 dark:bg-slate-600 rounded w-3/4"></div>
+            </div>
+          </div>
+
+          <!-- Recent Activity & Submissions Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Recent Test Submissions -->
+            <div class="glass-panel rounded-3xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-clock-rotate-left text-brand-500"></i>
+                  <span>हालिया टेस्ट सबमिशन (Recent Attempts)</span>
+                </h3>
+                <button onclick="switchAdminTab('results')" class="text-xs text-brand-600 dark:text-brand-400 font-bold hover:underline">सभी देखें ➔</button>
+              </div>
+              <div id="overview-recent-tests" class="space-y-2.5">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+            <!-- Recent Students -->
+            <div class="glass-panel rounded-3xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-user-plus text-purple-500"></i>
+                  <span>हालिया पंजीकृत विद्यार्थी (New Students)</span>
+                </h3>
+                <button onclick="switchAdminTab('users')" class="text-xs text-brand-600 dark:text-brand-400 font-bold hover:underline">सभी देखें ➔</button>
+              </div>
+              <div id="overview-recent-students" class="space-y-2.5">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 2: USER MANAGEMENT (STUDENT & ADMINS)      -->
+        <!-- ============================================== -->
+        <div id="tab-users" class="hidden space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-black text-slate-900 dark:text-white">उपयोगकर्ता प्रबंधन (User Management)</h2>
+              <p class="text-xs text-slate-500">छात्रों की स्थिति, ब्लॉक/अनब्लॉक, विवरण एवं रोल नियंत्रण</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="loadUsers()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-rotate-right"></i> रीफ्रेश
+              </button>
+            </div>
+          </div>
+
+          <!-- Search & Filter Bar -->
+          <div class="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row gap-3">
+            <div class="relative flex-1">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
+                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+              </span>
+              <input type="text" id="user-search-input" oninput="handleUserSearch()" placeholder="नाम, यूज़रनेम, रेफरल कोड से खोजें..."
+                class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="user-role-filter" onchange="handleUserSearch()" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold cursor-pointer">
+                <option value="all">सभी रोल (All Roles)</option>
+                <option value="student">केवल विद्यार्थी (Students)</option>
+                <option value="admin">केवल एडमिन (Admins)</option>
+              </select>
+              <select id="user-status-filter" onchange="handleUserSearch()" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold cursor-pointer">
+                <option value="all">सभी स्थिति (All Status)</option>
+                <option value="active">सक्रिय (Active)</option>
+                <option value="blocked">ब्लॉक (Blocked)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Users Table Container -->
+          <div class="glass-panel rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 uppercase font-extrabold text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-700">
+                  <tr>
+                    <th class="p-3.5 pl-5">उपयोगकर्ता (User)</th>
+                    <th class="p-3.5">रोल (Role)</th>
+                    <th class="p-3.5">स्थिति (Status)</th>
+                    <th class="p-3.5">रेफरल कोड</th>
+                    <th class="p-3.5">पंजीकरण तिथि</th>
+                    <th class="p-3.5 pr-5 text-right">कार्रवाई (Actions)</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 3: COURSE MANAGEMENT                       -->
+        <!-- ============================================== -->
+        <div id="tab-courses" class="hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-black text-slate-900 dark:text-white">कोर्स प्रबंधन (Course Management)</h2>
+              <p class="text-xs text-slate-500">प्रतियोगी परीक्षा पाठ्यक्रम, श्रेणियां व स्थिति</p>
+            </div>
+            <button onclick="openCourseModal()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-plus"></i> नया कोर्स जोड़ें
+            </button>
+          </div>
+
+          <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 4: SUBJECT MANAGEMENT                      -->
+        <!-- ============================================== -->
+        <div id="tab-subjects" class="hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-black text-slate-900 dark:text-white">विषय प्रबंधन (Subject Management)</h2>
+              <p class="text-xs text-slate-500">कोर्स से जुड़े विषय व अध्याय सूची</p>
+            </div>
+            <button onclick="openSubjectModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-plus"></i> नया विषय जोड़ें
+            </button>
+          </div>
+
+          <div id="subjects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 5: STUDY MATERIALS & PDF MANAGEMENT        -->
+        <!-- ============================================== -->
+        <div id="tab-materials" class="hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-black text-slate-900 dark:text-white">स्टडी मटेरियल व PDF (Materials)</h2>
+              <p class="text-xs text-slate-500">ई-बुक्स, हस्तलिखित नोट्स, और डाउनलोड फाइल्स</p>
+            </div>
+            <button onclick="openMaterialModal()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-cloud-arrow-up"></i> नई सामग्री / PDF जोड़ें
+            </button>
+          </div>
+
+          <div id="materials-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 6: MCQ / QUIZ BUILDER MANAGEMENT           -->
+        <!-- ============================================== -->
+        <div id="tab-quizzes" class="hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-black text-slate-900 dark:text-white">क्विज व मॉक टेस्ट (Quiz Management)</h2>
+              <p class="text-xs text-slate-500">ऑनलाइन टेस्ट्स, प्रश्नोत्तरी (MCQ), समय सीमा व अंक</p>
+            </div>
+            <button onclick="openQuizModal()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-plus"></i> नया टेस्ट बनाएं
+            </button>
+          </div>
+
+          <div id="quizzes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 7: RESULTS & PROGRESS ANALYTICS            -->
+        <!-- ============================================== -->
+        <div id="tab-results" class="hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-black text-slate-900 dark:text-white">परिणाम व विद्यार्थी प्रगति (Results & Progress)</h2>
+              <p class="text-xs text-slate-500">छात्रों के मॉक टेस्ट अंक, प्रतिशत और विस्तृत रिपोर्ट</p>
+            </div>
+            <button onclick="loadResults()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-rotate-right"></i> रीफ्रेश
+            </button>
+          </div>
+
+          <!-- KPI Summary Strip -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="results-kpi-strip">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Results Table -->
+          <div class="glass-panel rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 uppercase font-extrabold text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-700">
+                  <tr>
+                    <th class="p-3.5 pl-5">विद्यार्थी (Student)</th>
+                    <th class="p-3.5">टेस्ट शीर्षक (Test)</th>
+                    <th class="p-3.5">अंक (Score)</th>
+                    <th class="p-3.5">प्रतिशत</th>
+                    <th class="p-3.5">स्थिति</th>
+                    <th class="p-3.5 pr-5 text-right">तिथि व समय</th>
+                  </tr>
+                </thead>
+                <tbody id="results-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 8: ANNOUNCEMENTS (BROADCAST)               -->
+        <!-- ============================================== -->
+        <div id="tab-announcements" class="hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-black text-slate-900 dark:text-white">घोषणाएं (Announcements)</h2>
+              <p class="text-xs text-slate-500">सभी विद्यार्थियों के लिए लाइव अलर्ट्स एवं सूचना पट्ट</p>
+            </div>
+            <button onclick="openAnnouncementModal()" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-md transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-bullhorn"></i> नई घोषणा बनाएं
+            </button>
+          </div>
+
+          <div id="announcements-list" class="space-y-3">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 9: NOTIFICATIONS (PUSH & LOGS)             -->
+        <!-- ============================================== -->
+        <div id="tab-notifications" class="hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-black text-slate-900 dark:text-white">सूचनाएं (Notifications)</h2>
+              <p class="text-xs text-slate-500">विद्यार्थियों को पुश नोटिफिकेशन व अलर्ट भेजें</p>
+            </div>
+            <button onclick="openNotificationModal()" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-paper-plane"></i> सूचना भेजें
+            </button>
+          </div>
+
+          <div id="notifications-list" class="space-y-3">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 10: APP & PLATFORM SETTINGS                -->
+        <!-- ============================================== -->
+        <div id="tab-settings" class="hidden space-y-5 max-w-3xl">
+          <div>
+            <h2 class="text-lg font-black text-slate-900 dark:text-white">ऐप व प्लेटफॉर्म सेटिंग्स (App Settings)</h2>
+            <p class="text-xs text-slate-500">ब्रांडिंग, सपोर्ट ईमेल, मेंटेनेंस मोड और सिस्टम कॉन्फ़िगरेशन</p>
+          </div>
+
+          <form id="app-settings-form" onsubmit="saveAppSettings(event)" class="glass-panel p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">ऐप का नाम (App Name)</label>
+                <input type="text" id="setting-app-name" required class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">लोगो URL (Logo SVG / PNG)</label>
+                <input type="text" id="setting-logo-url" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">सबटाइटल (Tagline)</label>
+              <input type="text" id="setting-app-subtitle" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">सपोर्ट ईमेल (Support Email)</label>
+                <input type="email" id="setting-contact-email" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">हेल्पलाइन फोन (Phone)</label>
+                <input type="text" id="setting-contact-phone" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-center justify-between">
+              <div>
+                <div class="text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  <span>मेंटेनेंस मोड (Maintenance Mode)</span>
+                </div>
+                <div class="text-[11px] text-amber-700 dark:text-amber-300 mt-0.5">सक्रिय करने पर छात्रों को मेंटेनेंस नोटिस दिखेगा।</div>
+              </div>
+              <input type="checkbox" id="setting-maintenance-mode" class="w-5 h-5 text-amber-600 rounded">
+            </div>
+
+            <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-between">
+              <div>
+                <div class="text-xs font-bold text-emerald-900 dark:text-emerald-200">नए छात्र पंजीकरण की अनुमति (Allow Signups)</div>
+                <div class="text-[11px] text-emerald-700 dark:text-emerald-300 mt-0.5">नए छात्रों के लिए त्वरित रजिस्ट्रेशन खुला रखें।</div>
+              </div>
+              <input type="checkbox" id="setting-allow-signups" checked class="w-5 h-5 text-emerald-600 rounded">
+            </div>
+
+            <!-- AI API AUTO-CONNECT & CONFIGURATION -->
+            <div class="p-5 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-sm shadow-md shadow-indigo-500/20">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <span>StudyPulse AI इंजन (AI API Engine)</span>
+                      <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-extrabold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ऑटो-कनेक्टेड (Live)
+                      </span>
+                    </h3>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Google Gemini & Multi-Domain Solver 100% ऑटो-कनेक्टेड है (Zero Key Mode)</p>
+                  </div>
+                </div>
+                <button type="button" onclick="testAdminAiConnection()" class="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-800 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-slate-700 transition flex items-center gap-1 shadow-sm cursor-pointer">
+                  <i class="fa-solid fa-bolt text-amber-500"></i> AI टेस्ट करें
+                </button>
+              </div>
+
+              <div id="admin-ai-test-result" class="hidden text-xs p-2.5 rounded-xl font-semibold"></div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">AI प्रोवाइडर मोड</label>
+                  <select id="setting-ai-provider" class="w-full p-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold">
+                    <option value="gemini">Google Gemini (ऑटो-कनेक्टेड / डिफ़ॉल्ट)</option>
+                    <option value="openai">OpenAI ChatGPT</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">कस्टम Google Gemini API Key (वैकल्पिक)</label>
+                  <input type="password" id="setting-gemini-key" placeholder="AIzaSy... (खाली रखने पर डायरेक्ट ऑटो-कनेक्ट)" class="w-full p-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono">
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-2">
+              <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md transition cursor-pointer">
+                सेटिंग्स सुरक्षित करें (Save Settings)
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODALS CONTAINER                               -->
+  <!-- ============================================== -->
+
+  <!-- User Details Modal -->
+  <div id="modal-user-details" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden modal-spring">
+      <div class="p-5 bg-gradient-to-r from-brand-600 to-indigo-600 text-white flex items-center justify-between">
+        <h3 class="text-base font-black flex items-center gap-2">
+          <span>👨‍🎓 विद्यार्थी प्रोफाइल व विवरण</span>
+        </h3>
+        <button onclick="closeModal('modal-user-details')" class="text-white/80 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div id="user-details-body" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar text-xs">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Course Modal (Add/Edit) -->
+  <div id="modal-course" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden modal-spring">
+      <div class="p-5 bg-gradient-to-r from-brand-600 to-indigo-600 text-white flex items-center justify-between">
+        <h3 id="modal-course-title" class="text-base font-black">नया कोर्स जोड़ें</h3>
+        <button onclick="closeModal('modal-course')" class="text-white/80 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="course-form" onsubmit="handleCourseSubmit(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="course-id-input">
+        <div>
+          <label class="block font-bold mb-1">कोर्स शीर्षक (Title) *</label>
+          <input type="text" id="course-title-input" required class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold mb-1">कोर्स कोड (Code)</label>
+            <input type="text" id="course-code-input" placeholder="SSC-2026" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold mb-1">श्रेणी (Category)</label>
+            <select id="course-category-input" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold">
+              <option value="SSC">SSC (CGL, CHSL, MTS)</option>
+              <option value="Railway">Railway (NTPC, Group D)</option>
+              <option value="Banking">Banking (IBPS, SBI)</option>
+              <option value="Police">State Police</option>
+              <option value="UPSC">UPSC / State PSC</option>
+              <option value="Teaching">Teaching / CTET</option>
+              <option value="General">General Study</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold mb-1">कवर इमेज URL (Image URL)</label>
+          <input type="text" id="course-image-input" placeholder="https://..." class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono">
+        </div>
+        <div>
+          <label class="block font-bold mb-1">विवरण (Description)</label>
+          <textarea id="course-desc-input" rows="3" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></textarea>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="course-published-input" checked class="w-4 h-4 text-brand-600 rounded">
+          <label for="course-published-input" class="font-bold">कोर्स को छात्रों के लिए तुरंत प्रकाशित रखें (Published)</label>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-course')" class="px-4 py-2 rounded-xl text-slate-500 font-bold">रद्द करें</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 text-white font-bold shadow-md hover:bg-brand-700">सहेजें (Save)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Subject Modal (Add/Edit) -->
+  <div id="modal-subject" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden modal-spring">
+      <div class="p-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center justify-between">
+        <h3 id="modal-subject-title" class="text-base font-black">नया विषय जोड़ें</h3>
+        <button onclick="closeModal('modal-subject')" class="text-white/80 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="subject-form" onsubmit="handleSubjectSubmit(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="subject-id-input">
+        <div>
+          <label class="block font-bold mb-1">विषय शीर्षक (Subject Name) *</label>
+          <input type="text" id="subject-title-input" required placeholder="उदा. संख्यात्मक अभियोग्यता (Maths)" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+        </div>
+        <div>
+          <label class="block font-bold mb-1">संबंधित कोर्स चुनें (Assign to Course)</label>
+          <select id="subject-course-select" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold mb-1">विषय कोड (Code)</label>
+            <input type="text" id="subject-code-input" placeholder="MATH-01" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold mb-1">आइकन (FontAwesome)</label>
+            <input type="text" id="subject-icon-input" placeholder="fa-calculator" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono">
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold mb-1">विषय विवरण (Description)</label>
+          <textarea id="subject-desc-input" rows="2" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-subject')" class="px-4 py-2 rounded-xl text-slate-500 font-bold">रद्द करें</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 text-white font-bold shadow-md hover:bg-indigo-700">सहेजें (Save)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Study Material / PDF Modal (Add/Edit + File Upload) -->
+  <div id="modal-material" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden modal-spring">
+      <div class="p-5 bg-gradient-to-r from-rose-600 to-pink-600 text-white flex items-center justify-between">
+        <h3 id="modal-material-title" class="text-base font-black">स्टडी मटेरियल / PDF जोड़ें</h3>
+        <button onclick="closeModal('modal-material')" class="text-white/80 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="material-form" onsubmit="handleMaterialSubmit(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="material-id-input">
+        <div>
+          <label class="block font-bold mb-1">मटेरियल शीर्षक (Title) *</label>
+          <input type="text" id="material-title-input" required placeholder="उदा. संपूर्ण प्रतिशत हल नोट्स व शॉर्ट ट्रिक्स" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold mb-1">विषय (Subject)</label>
+            <input type="text" id="material-subject-input" placeholder="गणित" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold mb-1">प्रकार (Type)</label>
+            <select id="material-type-input" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold">
+              <option value="PDF">PDF ई-बुक</option>
+              <option value="Notes">हस्तलिखित नोट्स</option>
+              <option value="Formula">फॉर्मूला शीट</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- File Upload or Direct URL -->
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2">
+          <label class="block font-bold">फ़ाइल अपलोड (Upload PDF / Doc)</label>
+          <input type="file" id="material-file-upload" onchange="uploadMaterialFile(this)" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 cursor-pointer">
+          <div id="upload-status-text" class="text-[10px] text-slate-500 font-mono"></div>
+          <div>
+            <label class="block font-semibold text-[10px] text-slate-400 mt-1">फ़ाइल लिंक (File URL)</label>
+            <input type="text" id="material-url-input" placeholder="/uploads/... या https://..." class="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold mb-1">पृष्ठ संख्या (Pages)</label>
+            <input type="text" id="material-pages-input" placeholder="24 पृष्ठ" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold mb-1">फ़ाइल साइज़ (Size)</label>
+            <input type="text" id="material-size-input" placeholder="2.4 MB" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold mb-1">संक्षिप्त विवरण (Description)</label>
+          <textarea id="material-desc-input" rows="2" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-material')" class="px-4 py-2 rounded-xl text-slate-500 font-bold">रद्द करें</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-rose-600 text-white font-bold shadow-md hover:bg-rose-700">सहेजें (Save)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Interactive Quiz / MCQ Builder Modal -->
+  <div id="modal-quiz" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden modal-spring flex flex-col max-h-[92vh]">
+      <div class="p-5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between shrink-0">
+        <div>
+          <h3 id="modal-quiz-title" class="text-base font-black">नया मॉक टेस्ट व MCQ क्विज बनाएं</h3>
+          <p class="text-[11px] text-emerald-100">प्रश्न, 4 विकल्प और सही उत्तर निर्धारित करें</p>
+        </div>
+        <button onclick="closeModal('modal-quiz')" class="text-white/80 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="quiz-form" onsubmit="handleQuizSubmit(event)" class="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1 text-xs">
+        <input type="hidden" id="quiz-id-input">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold mb-1">टेस्ट शीर्षक (Test Title) *</label>
+            <input type="text" id="quiz-title-input" required placeholder="उदा. SSC CGL 2026 गणित ऑल-इंडिया मॉक टेस्ट" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold mb-1">विषय (Subject)</label>
+            <input type="text" id="quiz-subject-input" placeholder="गणित / रीजनिंग / GK" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold mb-1">समय सीमा (Min)</label>
+            <input type="number" id="quiz-duration-input" value="25" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold mb-1">कुल अंक (Marks)</label>
+            <input type="number" id="quiz-marks-input" value="50" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold mb-1">उत्तीर्ण अंक (Pass)</label>
+            <input type="number" id="quiz-pass-input" value="20" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+          </div>
+        </div>
+
+        <!-- DYNAMIC QUESTIONS LIST -->
+        <div class="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>📝 प्रश्न सूची (MCQ Questions)</span>
+              <span id="quiz-questions-counter" class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">0 प्रश्न</span>
+            </h4>
+            <button type="button" onclick="addQuizQuestionField()" class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold text-xs border border-emerald-300 dark:border-emerald-700 flex items-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-plus"></i> प्रश्न जोड़ें
+            </button>
+          </div>
+
+          <div id="quiz-questions-container" class="space-y-4">
+            <!-- Dynamic Questions added here -->
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-4 border-t border-slate-200 dark:border-slate-800 shrink-0">
+          <button type="button" onclick="closeModal('modal-quiz')" class="px-4 py-2 rounded-xl text-slate-500 font-bold">रद्द करें</button>
+          <button type="submit" class="px-6 py-2 rounded-xl bg-emerald-600 text-white font-bold shadow-md hover:bg-emerald-700">क्विज सहेजें (Save Quiz)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Announcement Modal -->
+  <div id="modal-announcement" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden modal-spring">
+      <div class="p-5 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 flex items-center justify-between">
+        <h3 class="text-base font-black">📢 नई घोषणा बनाएं</h3>
+        <button onclick="closeModal('modal-announcement')" class="p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="announcement-form" onsubmit="handleAnnouncementSubmit(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="announcement-id-input">
+        <div>
+          <label class="block font-bold mb-1">घोषणा शीर्षक *</label>
+          <input type="text" id="ann-title-input" required placeholder="उदा. SSC CGL 2026 एडमिट कार्ड जारी" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+        </div>
+        <div>
+          <label class="block font-bold mb-1">घोषणा प्रकार (Type)</label>
+          <select id="ann-type-input" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold">
+            <option value="important">अति महत्वपूर्ण (Important Alert)</option>
+            <option value="exam">परीक्षा सूचना (Exam Notice)</option>
+            <option value="update">ऐप अपडेट (App Update)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1">घोषणा का विवरण (Content) *</label>
+          <textarea id="ann-content-input" rows="4" required placeholder="घोषणा की पूरी जानकारी..." class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-announcement')" class="px-4 py-2 rounded-xl text-slate-500 font-bold">रद्द करें</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold shadow-md hover:bg-amber-600">प्रकाशित करें (Publish)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Modal -->
+  <div id="modal-notification" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden modal-spring">
+      <div class="p-5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white flex items-center justify-between">
+        <h3 class="text-base font-black">🔔 सूचना भेजें (Push Notification)</h3>
+        <button onclick="closeModal('modal-notification')" class="text-white/80 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="notification-form" onsubmit="handleNotificationSubmit(event)" class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="block font-bold mb-1">सूचना शीर्षक *</label>
+          <input type="text" id="notif-title-input" required placeholder="उदा. आज का दैनिक मॉक टेस्ट लाइव है!" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+        </div>
+        <div>
+          <label class="block font-bold mb-1">प्राप्तकर्ता (Target Audience)</label>
+          <select id="notif-target-input" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold">
+            <option value="all">सभी विद्यार्थी (All Students)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1">सूचना संदेश (Message Body) *</label>
+          <textarea id="notif-message-input" rows="3" required placeholder="संदेश लिखें..." class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-notification')" class="px-4 py-2 rounded-xl text-slate-500 font-bold">रद्द करें</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-cyan-600 text-white font-bold shadow-md hover:bg-cyan-700">भेजें (Send Now)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="modal-confirm-delete" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 text-center space-y-4 modal-spring">
+      <div class="w-14 h-14 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center text-2xl mx-auto">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div>
+        <h4 class="text-base font-black text-slate-900 dark:text-white">क्या आप निश्चित हैं?</h4>
+        <p id="confirm-delete-message" class="text-xs text-slate-500 dark:text-slate-400 mt-1">यह डेटा स्थायी रूप से हटा दिया जाएगा।</p>
+      </div>
+      <div class="flex justify-center gap-3 pt-2">
+        <button onclick="closeModal('modal-confirm-delete')" class="px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs">रद्द करें</button>
+        <button id="confirm-delete-btn" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md">हाँ, हटाएं</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Realtime Toast Notifications Container -->
+  <div id="admin-toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-xs pointer-events-none"></div>
+
+  <!-- Scripts -->
+  <script src="/js/admin.js"></script>
+</body>
+
+</html>

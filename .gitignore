@@ -1,0 +1,32 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller build outputs
+build/
+dist/
+*.manifest
+*.spec
+
+# IDE & OS files
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+
+# Binaries & external tools
+cloudflared.exe
+*.exe
+
+# Logs & temp
+*.log
+scratch/
+.env
+*.env
+public_url.txt
+
+# Large uploads (>100MB exceeds GitHub limit)
+frontend/uploads/
+*.pdf
+
