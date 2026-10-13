@@ -2747,15 +2747,20 @@
 
       <!-- Mode Selector Tabs -->
       <div class="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-1.5 gap-1.5">
-        <button type="button" id="tab-btn-online" onclick="switchMobileTab('online')"
+        <button type="button" id="tab-btn-localhost" onclick="switchMobileTab('localhost')"
           class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-indigo-600 text-white shadow-sm">
-          <i class="fa-solid fa-globe"></i>
-          <span>🌐 ऑनलाइन लिंक (इंटरनेट)</span>
+          <i class="fa-solid fa-laptop"></i>
+          <span>💻 लोकल (http://localhost:5000)</span>
         </button>
         <button type="button" id="tab-btn-wifi" onclick="switchMobileTab('wifi')"
           class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
           <i class="fa-solid fa-wifi"></i>
-          <span>📶 सेम वाई-फ़ाई (सुपरफ़ास्ट)</span>
+          <span>📶 वाई-फ़ाई</span>
+        </button>
+        <button type="button" id="tab-btn-online" onclick="switchMobileTab('online')"
+          class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+          <i class="fa-solid fa-globe"></i>
+          <span>🌐 ऑनलाइन लिंक</span>
         </button>
       </div>
 
@@ -2769,29 +2774,36 @@
           <div class="flex items-center justify-between">
             <span id="mobile-mode-title"
               class="text-xs font-extrabold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
-              <i class="fa-solid fa-bolt text-amber-500"></i>
-              <span>दुनिया भर में किसी भी मोबाइल / नेटवर्क पर:</span>
+              <i class="fa-solid fa-laptop text-indigo-500"></i>
+              <span>लोकल पीसी सर्वर (http://localhost:5000):</span>
             </span>
             <span id="mobile-status-pill"
               class="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/70 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-              <span id="mobile-status-text">सक्रिय एवं कनेक्टेड (Online)</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span id="mobile-status-text">कनेक्टेड (Port 5000)</span>
             </span>
           </div>
 
-          <!-- URL Input + Copy -->
+          <!-- URL Input + Copy + Open -->
           <div class="flex items-center gap-2">
-            <input type="text" id="active-mobile-url-input" readonly value="कनेक्ट हो रहा है..."
+            <input type="text" id="active-mobile-url-input" readonly value="http://localhost:5000"
               class="w-full pl-3 pr-3 py-2.5 rounded-xl border border-indigo-200 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono text-xs text-indigo-700 dark:text-indigo-300 select-all font-semibold">
             <button onclick="copyActiveMobileUrl()"
-              class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow transition shrink-0">
+              class="px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow transition shrink-0"
+              title="लिंक कॉपी करें">
               <i class="fa-regular fa-copy"></i>
               <span id="copy-active-btn-text">कॉपी</span>
             </button>
+            <a id="active-mobile-open-link" href="http://localhost:5000" target="_blank"
+              class="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow transition shrink-0"
+              title="ब्राउज़र में खोलें">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>खोलें</span>
+            </a>
           </div>
 
           <p id="mobile-mode-hint" class="text-[11px] text-slate-500 dark:text-slate-400">
-            ✓ यह सुरक्षित StudyPulse ऑनलाइन लिंक 24/7 ऑटो-कनेक्टेड रहेगी और बिना किसी एरर के काम करेगी।
+            ✓ यह स्टडी ऐप http://localhost:5000 पर सीधे कनेक्टेड है। व्हाट्सएप व ब्राउज़र में इसी लिंक से चलेगा।
           </p>
         </div>
 
@@ -2827,7 +2839,7 @@
             <button onclick="shareViaWhatsAppActive()"
               class="w-full py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition transform hover:-translate-y-0.5">
               <i class="fa-brands fa-whatsapp text-sm"></i>
-              <span>व्हाट्सएप पर लिंक भेजें</span>
+              <span>व्हाट्सएप पर लिंक भेजें (http://localhost:5000)</span>
             </button>
 
             <!-- Refresh / Restart / Camera Scanner Actions -->

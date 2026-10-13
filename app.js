@@ -3371,7 +3371,7 @@ function handleAdClick() {
 // 20. SHAREABLE APPLICATION URL, QR CODE & MOBILE ACCESS
 // ==========================================
 
-let currentMobileTab = 'online'; // 'online' or 'wifi'
+let currentMobileTab = 'localhost'; // 'localhost', 'wifi', or 'online'
 let currentNetworkInfo = {
   local_ip: '127.0.0.1',
   mobile_wifi_url: 'http://localhost:5000',
@@ -3419,11 +3419,14 @@ function startNetworkInfoPolling() {
 }
 
 function getActiveMobileUrl() {
-  if (currentMobileTab === 'online') {
-    return currentNetworkInfo.public_url || currentNetworkInfo.mobile_wifi_url || window.location.href;
-  } else {
+  if (currentMobileTab === 'localhost') {
+    return 'http://localhost:5000';
+  } else if (currentMobileTab === 'wifi') {
     return currentNetworkInfo.mobile_wifi_url || `http://${window.location.hostname}:5000`;
+  } else if (currentMobileTab === 'online') {
+    return currentNetworkInfo.public_url || currentNetworkInfo.mobile_wifi_url || 'http://localhost:5000';
   }
+  return 'http://localhost:5000';
 }
 
 function renderQRCode(targetUrl) {
@@ -3457,12 +3460,14 @@ function renderQRCode(targetUrl) {
 
 function renderActiveMobileView() {
   const urlInput = document.getElementById('active-mobile-url-input');
+  const openLink = document.getElementById('active-mobile-open-link');
   const modeTitle = document.getElementById('mobile-mode-title');
   const statusPill = document.getElementById('mobile-status-pill');
   const statusText = document.getElementById('mobile-status-text');
   const modeHint = document.getElementById('mobile-mode-hint');
   const tunnelBadge = document.getElementById('mobile-tunnel-badge');
 
+  const tabBtnLocalhost = document.getElementById('tab-btn-localhost');
   const tabBtnOnline = document.getElementById('tab-btn-online');
   const tabBtnWifi = document.getElementById('tab-btn-wifi');
 
@@ -3471,15 +3476,33 @@ function renderActiveMobileView() {
   if (urlInput) {
     urlInput.value = activeUrl;
   }
+  if (openLink) {
+    openLink.href = activeUrl;
+  }
 
-  if (currentMobileTab === 'online') {
-    if (tabBtnOnline) {
-      tabBtnOnline.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-indigo-600 text-white shadow-sm';
-    }
-    if (tabBtnWifi) {
-      tabBtnWifi.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
-    }
+  const activeClass = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-indigo-600 text-white shadow-sm';
+  const inactiveClass = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
 
+  if (tabBtnLocalhost) tabBtnLocalhost.className = (currentMobileTab === 'localhost') ? activeClass : inactiveClass;
+  if (tabBtnWifi) tabBtnWifi.className = (currentMobileTab === 'wifi') ? activeClass : inactiveClass;
+  if (tabBtnOnline) tabBtnOnline.className = (currentMobileTab === 'online') ? activeClass : inactiveClass;
+
+  if (currentMobileTab === 'localhost') {
+    if (modeTitle) {
+      modeTitle.innerHTML = '<i class="fa-solid fa-laptop text-indigo-500 mr-1.5"></i>लोकल पीसी सर्वर (http://localhost:5000):';
+    }
+    if (tunnelBadge) {
+      tunnelBadge.textContent = 'लोकल सक्रिय';
+      tunnelBadge.className = 'text-[10px] bg-emerald-400 text-slate-900 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider';
+    }
+    if (statusPill && statusText) {
+      statusPill.className = 'text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/70 px-2.5 py-0.5 rounded-full flex items-center gap-1';
+      statusText.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></span>कनेक्टेड (Port 5000)';
+    }
+    if (modeHint) {
+      modeHint.textContent = '✓ यह स्टडी ऐप http://localhost:5000 पर सीधे कनेक्टेड है। व्हाट्सएप व ब्राउज़र में इसी लिंक से चलेगा।';
+    }
+  } else if (currentMobileTab === 'online') {
     if (modeTitle) {
       modeTitle.innerHTML = '<i class="fa-solid fa-bolt text-amber-500 mr-1.5"></i>दुनिया भर में किसी भी मोबाइल / नेटवर्क पर:';
     }
@@ -3507,13 +3530,6 @@ function renderActiveMobileView() {
     }
   } else {
     // Wi-Fi Tab
-    if (tabBtnOnline) {
-      tabBtnOnline.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
-    }
-    if (tabBtnWifi) {
-      tabBtnWifi.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-indigo-600 text-white shadow-sm';
-    }
-
     if (modeTitle) {
       modeTitle.innerHTML = '<i class="fa-solid fa-wifi text-emerald-500 mr-1.5"></i>सेम वाई-फ़ाई / हॉटस्पॉट (LAN Direct):';
     }
@@ -3588,8 +3604,8 @@ function copyViaFallback(url, btnText) {
 }
 
 function shareViaWhatsAppActive() {
-  const url = getActiveMobileUrl();
-  const text = encodeURIComponent(`StudyPulse - सरकारी एग्जाम व RS अग्रवाल स्टडी ऐप अपने मोबाइल पर खोलें:\n👉 ${url}`);
+  const url = 'http://localhost:5000';
+  const text = encodeURIComponent(`StudyPulse - सरकारी एग्जाम व RS अग्रवाल स्टडी ऐप अपने डिवाइस पर खोलें:\n👉 ${url}`);
   window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
 }
 
@@ -3621,17 +3637,7 @@ async function restartCloudflareTunnel() {
 }
 
 function getShareableAppUrl() {
-  const code = (currentUser && currentUser.referralCode) ? currentUser.referralCode : 'STUDY';
-  if (currentNetworkInfo && currentNetworkInfo.public_url) {
-    return `${currentNetworkInfo.public_url}?ref=${code}`;
-  }
-  if (currentNetworkInfo && currentNetworkInfo.mobile_wifi_url && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-    return `${currentNetworkInfo.mobile_wifi_url}?ref=${code}`;
-  }
-  if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
-    return `${window.location.origin}${window.location.pathname}?ref=${code}`;
-  }
-  return `https://studypulse.app/join?ref=${code}`;
+  return 'http://localhost:5000';
 }
 
 function openShareModal() {
