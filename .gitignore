@@ -32,4 +32,5 @@ frontend/uploads/
 
 # Netlify state & deploys
 .netlify/
+frontend.zip
 
