@@ -30,3 +30,6 @@ public_url.txt
 frontend/uploads/
 *.pdf
 
+# Netlify state & deploys
+.netlify/
+
