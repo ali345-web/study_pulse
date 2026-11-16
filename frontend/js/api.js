@@ -46,12 +46,16 @@ const StudyPulseAPI = (function () {
       }
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || `HTTP error! status: ${response.status}`);
+        const err = new Error(data.message || data.error || `HTTP error! status: ${response.status}`);
+        if (response.status === 404 || response.status >= 500) {
+          err.isNetworkError = true;
+        }
+        throw err;
       }
 
       return data;
     } catch (error) {
-      if (error instanceof TypeError || (error.message && (error.message.includes('fetch') || error.message.includes('Network') || error.message.includes('Failed')))) {
+      if (error instanceof TypeError || (error.message && (error.message.includes('fetch') || error.message.includes('Network') || error.message.includes('Failed') || error.message.includes('404') || error.message.includes('status: 404') || error.message.includes('status: 5')))) {
         error.isNetworkError = true;
       }
       console.warn(`[StudyPulseAPI] Request to ${endpoint} failed:`, error.message);
@@ -265,8 +269,62 @@ const StudyPulseAPI = (function () {
       async getStatus() {
         return request('/ai/status');
       },
-      async autoConnect() {
+            async autoConnect() {
         return request('/ai/connect', { method: 'POST' });
+      }
+    },
+
+    // StudyPulse Live Class & Streaming API
+    live: {
+      async getStatus() {
+        return request('/live/status');
+      },
+      async start(data) {
+        return request('/live/start', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+      },
+      async end() {
+        return request('/live/end', {
+          method: 'POST'
+        });
+      },
+      async getComments(since = null) {
+        const q = since ? `?since=${encodeURIComponent(since)}` : '';
+        return request(`/live/comments${q}`);
+      },
+      async postComment(data) {
+        return request('/live/comments', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+      },
+      async deleteComment(commentId) {
+        return request(`/live/comments/${encodeURIComponent(commentId)}`, {
+          method: 'DELETE'
+        });
+      },
+      async pinMessage(message) {
+        return request('/live/pin', {
+          method: 'POST',
+          body: JSON.stringify({ message })
+        });
+      },
+      async heartbeat(viewerId) {
+        return request('/live/heartbeat', {
+          method: 'POST',
+          body: JSON.stringify({ viewerId })
+        });
+      },
+      async sendSignal(data) {
+        return request('/live/signal', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+      },
+      async getSignal(targetId) {
+        return request(`/live/signal/${encodeURIComponent(targetId)}`);
       }
     }
   };

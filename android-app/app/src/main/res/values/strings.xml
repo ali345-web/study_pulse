@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">StudyPulse</string>
+    <string name="error_offline">Internet se connect nahi ho paya. Kripya apna connection check karein.</string>
+    <string name="retry_btn">Dobara Koshish Karein</string>
+    <string name="exit_message">App band karne ke liye ek baar aur back dabayein</string>
+</resources>

@@ -76,6 +76,7 @@ from backend.routes.dashboard_routes import dashboard_app
 from backend.routes.admin_routes import admin_app
 from backend.routes.materials_routes import materials_app
 from backend.routes.ai_routes import ai_app
+from backend.routes.live_routes import live_app
 
 app = Bottle()
 
@@ -194,6 +195,7 @@ app.mount('/api/dashboard', dashboard_app)
 app.mount('/api/materials', materials_app)
 app.mount('/api/admin', admin_app)
 app.mount('/api/ai', ai_app)
+app.mount('/api/live', live_app)
 
 # ==========================================
 # Static Frontend Serving & Admin Route
@@ -202,7 +204,9 @@ app.mount('/api/ai', ai_app)
 # ==========================================
 @app.route('/')
 @app.route('/studypulse')
+@app.route('/studypulse/')
 @app.route('/app')
+@app.route('/app/')
 def serve_index():
     return static_file('index.html', root=FRONTEND_DIR)
 
@@ -215,9 +219,18 @@ def serve_sw():
     return static_file('sw.js', root=FRONTEND_DIR, mimetype='application/javascript')
 
 @app.route('/admin')
+@app.route('/admin/')
 @app.route('/admin/<subpath:path>')
 def serve_admin(subpath=None):
     return static_file('admin.html', root=FRONTEND_DIR)
+
+@app.route('/studypulse/<subpath:path>')
+def serve_studypulse_subpath(subpath):
+    return static_file(subpath, root=FRONTEND_DIR)
+
+@app.route('/app/<subpath:path>')
+def serve_app_subpath(subpath):
+    return static_file(subpath, root=FRONTEND_DIR)
 
 @app.route('/uploads/<filepath:path>')
 def serve_uploads(filepath):
@@ -247,24 +260,15 @@ def get_network_info():
     local_ip = get_local_ip()
     port = int(os.getenv("PORT", 5000))
     raw_public = status_info.get("public_url")
+    is_online = status_info.get("status") == "online" and bool(raw_public)
 
-    # Fallback to public_url.txt if present
-    if not raw_public:
-        pub_file = os.path.join(PROJECT_ROOT, "public_url.txt")
-        if os.path.exists(pub_file):
-            try:
-                with open(pub_file, 'r', encoding='utf-8') as f:
-                    content = f.read().strip()
-                    if content and "trycloudflare.com" in content:
-                        raw_public = content.split("/studypulse")[0].strip()
-            except Exception:
-                pass
-
-    if raw_public:
-        raw_public = raw_public.split("/studypulse")[0].strip().rstrip("/")
-        branded_public_url = f"{raw_public}/studypulse"
+    # Use clean HTTPS URL (works natively across Safari, Chrome, iOS, Android, and Desktop)
+    if is_online and raw_public:
+        clean_public = raw_public.rstrip("/")
+        branded_public = f"{clean_public}/studypulse"
     else:
-        branded_public_url = None
+        clean_public = None
+        branded_public = None
 
     response.content_type = "application/json; charset=utf-8"
     return {
@@ -272,12 +276,13 @@ def get_network_info():
         "app_name": "StudyPulse",
         "local_ip": local_ip,
         "port": port,
-        "localhost_url": f"http://localhost:{port}/studypulse",
-        "mobile_wifi_url": f"http://{local_ip}:{port}/studypulse",
-        "public_url": branded_public_url,
-        "raw_public_url": raw_public,
-        "tunnel_status": status_info.get("status", "online" if branded_public_url else "starting"),
-        "tunnel_message": "StudyPulse ऑनलाइन क्लाउड सुरक्षित लिंक सक्रिय है" if branded_public_url else "StudyPulse क्लाउड लिंक तैयार हो रहा है...",
+        "localhost_url": f"http://localhost:{port}",
+        "mobile_wifi_url": f"http://{local_ip}:{port}",
+        "public_url": clean_public,
+        "branded_public_url": branded_public,
+        "raw_public_url": clean_public,
+        "tunnel_status": "online" if is_online else status_info.get("status", "starting"),
+        "tunnel_message": status_info.get("message", "StudyPulse सुरक्षित ऑनलाइन लिंक तैयार हो रहा है..."),
         "uptime_seconds": status_info.get("uptime_seconds", 0)
     }
 
@@ -325,16 +330,8 @@ def start_server(host="0.0.0.0", port=5000):
     threading.Thread(target=_bg_seed, name="BgDbSeedThread", daemon=True).start()
 
     local_ip = get_local_ip()
-    pub_file = os.path.join(PROJECT_ROOT, "public_url.txt")
-    public_url = None
-    if os.path.exists(pub_file):
-        try:
-            with open(pub_file, 'r', encoding='utf-8') as f:
-                content = f.read().strip()
-                if content and "trycloudflare.com" in content:
-                    public_url = content
-        except Exception:
-            pass
+    sup = get_tunnel_supervisor()
+    public_url = sup.get_public_url() if sup else None
 
     print("=" * 65)
     print(f"  ✓ Local PC Browser URL  : http://localhost:{port}")
@@ -343,7 +340,6 @@ def start_server(host="0.0.0.0", port=5000):
         print(f"  ✓ Online / Public URL   : {public_url}")
     print(f"  ✓ API Health Endpoint   : http://localhost:{port}/api/health")
     print(f"  ✓ MongoDB Engine        : {'ONLINE' if is_connected() else 'INITIALIZING'}")
-    print("=" * 65)
     print("  📱 Connect any Mobile / Tablet to same WiFi and open:")
     print(f"     👉 http://{local_ip}:{port}")
     if public_url:

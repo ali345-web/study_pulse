@@ -431,6 +431,17 @@
           </div>
         </button>
 
+        <button onclick="navigateTo('live')" id="nav-live"
+          class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 group">
+          <div class="flex items-center gap-3">
+            <span class="w-5 text-center text-rose-500 text-base flex items-center justify-center">
+              <i class="fa-solid fa-tower-broadcast animate-pulse"></i>
+            </span>
+            <span class="font-extrabold text-rose-600 dark:text-rose-400">🔴 लाइव क्लास (Live Class)</span>
+          </div>
+          <span id="nav-live-dot" class="hidden w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+        </button>
+
         <button onclick="navigateTo('ai')" id="nav-ai"
           class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 group">
           <div class="flex items-center gap-3">
@@ -690,6 +701,25 @@
         <!-- SECTION 1: DASHBOARD (डैशबोर्ड)                -->
         <!-- ============================================== -->
         <div id="section-dashboard" class="space-y-6">
+
+          <!-- Real-Time Live Class Active Banner -->
+          <div id="dashboard-live-banner" class="hidden p-4 rounded-3xl bg-gradient-to-r from-rose-500/15 via-red-500/15 to-amber-500/15 border-2 border-rose-500/30 shadow-lg flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-rose-500 text-white flex items-center justify-center text-lg shadow-md animate-pulse">
+                <i class="fa-solid fa-tower-broadcast"></i>
+              </div>
+              <div>
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500/20 text-rose-500 border border-rose-500/30">
+                  <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span> लाइव क्लास चालू है
+                </span>
+                <h4 id="dashboard-live-title" class="text-sm font-black text-slate-900 dark:text-white mt-0.5">Special Live Lecture</h4>
+              </div>
+            </div>
+            <button type="button" onclick="navigateTo('live')" class="px-4 py-2 rounded-2xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-black text-xs shadow-md flex items-center gap-2 cursor-pointer transition whitespace-nowrap">
+              <i class="fa-solid fa-play text-[10px]"></i>
+              <span>क्लास में जुड़ें</span>
+            </button>
+          </div>
 
           <!-- ============================================== -->
           <!-- Welcome Banner (Aesthetic & Clean) -->
@@ -2955,6 +2985,7 @@
   <!-- Scripts -->
   <script src="js/qrcode.min.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/live_studio.js"></script>
   <script src="js/app.js"></script>
 </body>
 

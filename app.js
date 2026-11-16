@@ -1804,6 +1804,7 @@ function updateUserHeaderProfile() {
 function getViewTitle(viewId) {
   const map = {
     dashboard: t('navDashboard', 'डैशबोर्ड'),
+    live: t('navLive', '🔴 लाइव क्लास (Live Class)'),
     syllabus: t('navSyllabus', 'सिलेबस'),
     tests: t('navTests', 'मॉक टेस्ट'),
     exams: t('navExams', 'परीक्षाएं'),
@@ -1816,7 +1817,7 @@ function getViewTitle(viewId) {
 }
 
 function navigateTo(viewId) {
-  ['dashboard', 'syllabus', 'tests', 'exams', 'notes', 'jobs', 'materials', 'ai'].forEach(v => {
+  ['dashboard', 'syllabus', 'tests', 'exams', 'notes', 'jobs', 'materials', 'ai', 'live'].forEach(v => {
     const sec = document.getElementById(`section-${v}`);
     const navBtn = document.getElementById(`nav-${v}`);
     if (sec) {
@@ -1842,7 +1843,7 @@ function navigateTo(viewId) {
   if (topbar) topbar.innerHTML = `<span>${getViewTitle(viewId)}</span>`;
   
   // Synchronize Mobile Bottom Navigation active states
-  ['dashboard', 'tests', 'ai', 'jobs'].forEach(v => {
+  ['dashboard', 'tests', 'ai', 'jobs', 'live'].forEach(v => {
     const mobBtn = document.getElementById(`mobile-nav-${v}`);
     if (mobBtn) {
       if (v === viewId) {
@@ -1858,6 +1859,9 @@ function navigateTo(viewId) {
 
   if (viewId === 'ai' && typeof initSemiAi === 'function') {
     initSemiAi();
+  }
+  if (viewId === 'live' && window.LiveStudio) {
+    window.LiveStudio.initStudentLive();
   }
 }
 
@@ -3863,11 +3867,22 @@ function showPwaInstructionsModal() {
   alert(`📲 StudyPulse को ऐप की तरह इंस्टॉल करें:\n\n${instructions}\n\nइसके बाद ऐप आपकी होम स्क्रीन से सीधे एक क्लिक में खुलेगा!`);
 }
 
+window.openAdminLiveStudio = function () {
+  if (window.location.protocol === 'file:' || (window.Android && window.Android.isAndroidApp)) {
+    window.location.href = 'admin.html#live';
+  } else {
+    window.location.href = '/admin#live';
+  }
+};
+
 window.addEventListener('DOMContentLoaded', () => {
   initSplashScreen();
   initPwa();
   initStorage();
   fetchNetworkInfo(false);
+  if (window.LiveStudio) {
+    window.LiveStudio.startGlobalLiveChecker();
+  }
 });
 
 

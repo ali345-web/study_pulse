@@ -1,0 +1,14 @@
+﻿[
+  {
+    "_id": "live_current",
+    "isLive": false,
+    "title": "SSC / Railway GS Live Special Batch",
+    "subject": "General Studies",
+    "teacherName": "Super Admin",
+    "streamType": "camera_mic",
+    "streamUrl": "",
+    "startedAt": null,
+    "endedAt": null,
+    "pinnedMessage": "Swagat hai! Apne sawal live chat me pooch sakte hain."
+  }
+]

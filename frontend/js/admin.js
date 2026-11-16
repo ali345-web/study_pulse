@@ -227,6 +227,7 @@ function handleAdminLogout() {
 // 2. TAB SWITCHING & ROUTING
 // ==========================================
 const TAB_TITLES = {
+  live: '🔴 लाइव क्लास स्टूडियो (Live Broadcasting Studio)',
   overview: '📊 ओवरव्यू (Dashboard Overview)',
   users: '👥 उपयोगकर्ता प्रबंधन (User Management)',
   courses: '🎓 कोर्स प्रबंधन (Course Management)',
@@ -298,6 +299,9 @@ function switchAdminTab(tabName, updateHash = true) {
 
 function loadTabData(tabName) {
   switch (tabName) {
+    case 'live':
+      if (window.LiveStudio) window.LiveStudio.initAdminStudio();
+      break;
     case 'overview': loadOverview(); break;
     case 'users': loadUsers(); break;
     case 'courses': loadCourses(); break;

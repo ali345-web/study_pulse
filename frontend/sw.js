@@ -1,24 +1,36 @@
-// StudyPulse Service Worker (PWA Caching & Instant Launch)
-const CACHE_NAME = 'studypulse-v2.0';
+// StudyPulse Service Worker (PWA Caching & Instant Launch - Cross-Platform)
+const CACHE_NAME = 'studypulse-v2.1';
 const STATIC_ASSETS = [
-  '/',
-  '/studypulse',
-  '/index.html',
-  '/styles.css',
-  '/js/api.js',
-  '/js/app.js',
-  '/js/qrcode.min.js',
-  '/manifest.json',
-  '/icons/icon.svg'
+  './',
+  'index.html',
+  'admin.html',
+  'styles.css',
+  'js/api.js',
+  'js/app.js',
+  'js/admin.js',
+  'js/live_studio.js',
+  'js/qrcode.min.js',
+  'manifest.json',
+  'icons/icon.svg',
+  'icons/icon-192.svg',
+  'icons/icon-512.svg'
 ];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.log('[SW] Cache addAll partial notice:', err);
-      });
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Resilient cache population: never fail install if any individual asset is unavailable
+      for (const asset of STATIC_ASSETS) {
+        try {
+          const res = await fetch(asset, { cache: 'no-cache' });
+          if (res && res.ok) {
+            await cache.put(asset, res);
+          }
+        } catch (e) {
+          // Gracefully continue
+        }
+      }
     })
   );
 });
@@ -38,28 +50,33 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
 
-  // Network-first for dynamic API routes
-  if (url.pathname.startsWith('/api/')) {
+  // Skip dynamic API routes and external services
+  if (url.pathname.startsWith('/api/') || !url.protocol.startsWith('http')) {
     return;
   }
 
-  // Cache-first with network fallback for static assets
+  // Network-first with cache fallback
+  // Guarantees iPhone / Safari gets newest deployed version when online, with instant offline fallback
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Fetch in background to revalidate
-        fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, networkResponse.clone());
-            });
-          }
-        }).catch(() => {});
-        return cachedResponse;
-      }
-      return fetch(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const resClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, resClone);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(async () => {
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
+        if (event.request.mode === 'navigate') {
+          return (await caches.match('./index.html')) || (await caches.match('index.html')) || (await caches.match('./'));
+        }
+      })
   );
 });
