@@ -253,8 +253,8 @@ def get_mongo_client():
 
             client_candidate = MongoClient(
                 MONGODB_URI,
-                serverSelectionTimeoutMS=3000,
-                connectTimeoutMS=3000,
+                serverSelectionTimeoutMS=5000,
+                connectTimeoutMS=5000,
                 **tls_kwargs
             )
             # Ping to verify active connection
